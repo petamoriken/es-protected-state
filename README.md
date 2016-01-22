@@ -137,7 +137,7 @@ class SubFoo extends Foo {
 	}
 
 	protected baz() {
-		// too longer, plaese discuss this point
+		// too long, plaese discuss this point
 		protected.super.baz();
 		++protected.bar;
 	}
