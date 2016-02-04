@@ -1,6 +1,6 @@
 #Protected State for ECMAScript
 
-Stage NaN Proposal (My Personal Proposal)
+Stage NaN Proposal (My Personal Strawman)
 
 ##Overview
 
@@ -16,17 +16,18 @@ class Foo {
 	protected bar;
 
 	constructor() {
-		protected.bar = 1;
+		// shorthand for `this##bar = 1;`
+		##bar = 1;
 	}
 
 	getBar() {
-		return protected.bar;
+		return ##bar;
 	}
 }
 
 class SubFoo extends Foo {
 	getBarAndIncliment() {
-		return protected.bar++;
+		return ##bar++;
 	}
 }
 ```
@@ -36,6 +37,8 @@ This code supported as Syntax Sugar for below ES2015 code (using [Class Fields](
 ```js
 // utility
 function createProtectedStorage() {
+	"use strict";
+	
 	const wm = new WeakMap();
 
 	return (self, protectedClass) => {
@@ -119,15 +122,15 @@ class Foo {
 	protected bar;
 
 	constructor() {
-		protected.bar = 1;
+		##bar = 1;
 	}
 
 	getBar() {
-		return protected.bar;
+		return ##bar;
 	}
 
 	protected baz() {
-		++protected.bar;
+		++##bar;
 	}
 }
 
@@ -138,12 +141,12 @@ class SubFoo extends Foo {
 
 	protected baz() {
 		// too long, plaese discuss this point
-		protected.super.baz();
-		++protected.bar;
+		super##baz();
+		++##bar;
 	}
 
 	callBaz() {
-		protected.baz();
+		##baz();
 	}
 }
 ```
@@ -220,11 +223,11 @@ class Name {
 
 	getDecoratedName(type) {
 		if(type === "upper") {
-			return protected.upper();
+			return ##upper();
 		} else if(type === "star") {
-			return protected.star();
+			return ##star();
 		} else if(type === "dagger") {
-			return protected.dagger();
+			return ##dagger();
 		}
 	}
 
@@ -289,8 +292,7 @@ class Name {
 ```
 
 
-##Related Proposal in ES2016
+##Related Proposal in ES.next
 
 * <a href="https://github.com/jeffmo/es-class-fields-and-static-properties" target="_blank">Class Property Declarations</a> (Stage 1)
-* <a href="https://github.com/wycats/javascript-private-state" target="_blank">Private State for objects</a> (Stage 0)
-* <a href="https://github.com/zenparsing/es-private-fields" target="_blank">Private Fields</a>
+* <a href="https://github.com/wycats/javascript-private-state" target="_blank">Private State for objects</a>, <a href="https://github.com/zenparsing/es-private-fields" target="_blank">Private Fields</a> (Stage 0)
