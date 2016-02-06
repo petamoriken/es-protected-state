@@ -32,86 +32,86 @@ class SubFoo extends Foo {
 }
 ```
 
-This code supported as Syntax Sugar for below ES2015 code (using [Class Fields](https://github.com/jeffmo/es-class-fields-and-static-properties) for the sake of clarity):
-
-```js
-// utility
-function createProtectedStorage() {
-	"use strict";
+* This code supported as Syntax Sugar for below ES2015 code (using [Class Fields](https://github.com/jeffmo/es-class-fields-and-static-properties) for the sake of clarity):
 	
-	const wm = new WeakMap();
-
-	return (self, protectedClass) => {
-		const obj = wm.get(self);
-
-		if(protectedClass == null) {
+	```js
+	// utility
+	function createProtectedStorage() {
+		"use strict";
+		
+		const wm = new WeakMap();
+	
+		return (self, protectedClass) => {
+			const obj = wm.get(self);
+	
+			if(protectedClass == null) {
+				if(obj) {
+					return obj;
+				} else {
+					const ret = Object.create(null);
+					wm.set(self, ret);
+					return ret;
+				}
+			}
+	
+			const p = new protectedClass(self);
 			if(obj) {
-				return obj;
-			} else {
-				const ret = Object.create(null);
-				wm.set(self, ret);
-				return ret;
+				for(let key of Reflect.ownKeys(obj)) {
+					const descriptor = Object.getOwnPropertyDescriptor(obj, key);
+					Object.defineProperty(p, key, descriptor);
+				}
+			}
+			wm.set(self, p);
+			return p;
+		}
+	}
+	
+	const _ = createProtectedStorage();
+	```
+	
+	```js
+	class Protected_Foo {
+		bar;
+	
+		constructor(publicThis) {
+			this.public = publicThis;
+		}
+	}
+	
+	class Foo {
+		constructor() {
+			// protected instance
+			if(new.target === Foo) {
+				_(this, Protected_Foo);
+			}
+	
+			// protected property
+			_(this).bar = 1;
+		}
+	
+		getBar() {
+			return _(this).bar;
+		}
+	}
+	
+	class Protected_SubFoo extends Protected_Foo {
+	}
+	
+	class SubFoo extends Foo {
+		constructor() {
+			super();
+	
+			// protected instance
+			if(new.target === SubFoo) {
+				_(this, Protected_SubFoo);
 			}
 		}
-
-		const p = new protectedClass(self);
-		if(obj) {
-			for(let key of Reflect.ownKeys(obj)) {
-				const descriptor = Object.getOwnPropertyDescriptor(obj, key);
-				Object.defineProperty(p, key, descriptor);
-			}
-		}
-		wm.set(self, p);
-		return p;
-	}
-}
-
-const _ = createProtectedStorage();
-```
-
-```js
-class Protected_Foo {
-	bar;
-
-	constructor(publicThis) {
-		this.public = publicThis;
-	}
-}
-
-class Foo {
-	constructor() {
-		// protected instance
-		if(new.target === Foo) {
-			_(this, Protected_Foo);
-		}
-
-		// protected property
-		_(this).bar = 1;
-	}
-
-	getBar() {
-		return _(this).bar;
-	}
-}
-
-class Protected_SubFoo extends Protected_Foo {
-}
-
-class SubFoo extends Foo {
-	constructor() {
-		super();
-
-		// protected instance
-		if(new.target === SubFoo) {
-			_(this, Protected_SubFoo);
+	
+		getBarAndIncliment() {
+			return _(this).bar++;
 		}
 	}
-
-	getBarAndIncliment() {
-		return _(this).bar++;
-	}
-}
-```
+	```
 
 ###Override Protected Methods
 
@@ -150,63 +150,63 @@ class SubFoo extends Foo {
 }
 ```
 
-in ES2015 (omitted part of the utility code):
+* in ES2015 (omitted part of the utility code):
 
-```js
-class Protected_Foo {
-	bar;
-
-	constructor(publicThis) {
-		this.public = publicThis;
-	}
-
-	baz() {
-		++this.bar;
-	}
-}
-
-class Foo {
-	constructor() {
-		// protected instance
-		if(new.target === Foo) {
-			_(this, Protected_Foo);
+	```js
+	class Protected_Foo {
+		bar;
+	
+		constructor(publicThis) {
+			this.public = publicThis;
 		}
-
-		// protected property
-		_(this).bar = 1;
-	}
-
-	getBar() {
-		return _(this).bar;
-	}
-}
-
-class Protected_SubFoo extends Protected_Foo {
-	baz() {
-		super.baz();
-		++this.bar;
-	}
-}
-
-class SubFoo extends Foo {
-	constructor() {
-		super();
-
-		// protected instance
-		if(new.target === SubFoo) {
-			_(this, Protected_SubFoo);
+	
+		baz() {
+			++this.bar;
 		}
 	}
-
-	getBarAndIncliment() {
-		return _(this).bar++;
+	
+	class Foo {
+		constructor() {
+			// protected instance
+			if(new.target === Foo) {
+				_(this, Protected_Foo);
+			}
+	
+			// protected property
+			_(this).bar = 1;
+		}
+	
+		getBar() {
+			return _(this).bar;
+		}
 	}
-
-	callBaz() {
-		_(this).baz();
+	
+	class Protected_SubFoo extends Protected_Foo {
+		baz() {
+			super.baz();
+			++this.bar;
+		}
 	}
-}
-```
+	
+	class SubFoo extends Foo {
+		constructor() {
+			super();
+	
+			// protected instance
+			if(new.target === SubFoo) {
+				_(this, Protected_SubFoo);
+			}
+		}
+	
+		getBarAndIncliment() {
+			return _(this).bar++;
+		}
+	
+		callBaz() {
+			_(this).baz();
+		}
+	}
+	```
 
 ###Using Public Property in Private Methods
 
@@ -244,51 +244,51 @@ class Name {
 }
 ```
 
-in ES2015 (omitted part of the utility code):
+* in ES2015 (omitted part of the utility code):
 
-```js
-class Protected_Name {
-	constructor(publicThis) {
-		this.public = publicThis;
-	}
-
-	upper() {
-		return this.public.name.toUpperCase();
-	}
-
-	star() {
-		return `☆${ this.public.name }☆`;
-	}
-
-	dagger() {
-		return `†${ this.public.name }†`;
-	}
-}
-
-class Name {
-	name;
-
-	constructor(name) {
-		// protected instance
-		if(new.target === Name) {
-			_(this, Protected_Name);
+	```js
+	class Protected_Name {
+		constructor(publicThis) {
+			this.public = publicThis;
 		}
-
-		// public property
-		this.name = name;
-	}
-
-	getDecoratedName(type) {
-		if(type === "upper") {
-			return _(this).upper();
-		} else if(type === "star") {
-			return _(this).star();
-		} else if(type === "dagger") {
-			return _(this).dagger();
+	
+		upper() {
+			return this.public.name.toUpperCase();
+		}
+	
+		star() {
+			return `☆${ this.public.name }☆`;
+		}
+	
+		dagger() {
+			return `†${ this.public.name }†`;
 		}
 	}
-}
-```
+	
+	class Name {
+		name;
+	
+		constructor(name) {
+			// protected instance
+			if(new.target === Name) {
+				_(this, Protected_Name);
+			}
+	
+			// public property
+			this.name = name;
+		}
+	
+		getDecoratedName(type) {
+			if(type === "upper") {
+				return _(this).upper();
+			} else if(type === "star") {
+				return _(this).star();
+			} else if(type === "dagger") {
+				return _(this).dagger();
+			}
+		}
+	}
+	```
 
 
 ##Related Proposal in ES.next
