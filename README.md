@@ -32,6 +32,8 @@ class SubFoo extends Foo {
 }
 ```
 
+<p style="text-indent: 1em">
+
 This code supported as Syntax Sugar for below ES2015 code (using [Class Fields](https://github.com/jeffmo/es-class-fields-and-static-properties) for the sake of clarity):
 
 ```js
@@ -113,6 +115,8 @@ class SubFoo extends Foo {
 }
 ```
 
+</p>
+
 ###Override Protected Methods
 
 proposal code:
@@ -140,7 +144,6 @@ class SubFoo extends Foo {
 	}
 
 	protected baz() {
-		// too long, plaese discuss this point
 		super##baz();
 		++##bar;
 	}
@@ -150,6 +153,8 @@ class SubFoo extends Foo {
 	}
 }
 ```
+
+<p style="text-indent: 1em">
 
 in ES2015 (omitted part of the utility code):
 
@@ -209,6 +214,8 @@ class SubFoo extends Foo {
 }
 ```
 
+</p>
+
 ###Using Public Property in Private Methods
 
 proposal code:
@@ -244,6 +251,8 @@ class Name {
 	}
 }
 ```
+
+<p style="text-indent: 1em">
 
 in ES2015 (omitted part of the utility code):
 
@@ -290,6 +299,8 @@ class Name {
 	}
 }
 ```
+
+</p>
 
 
 ##Related Proposal in ES.next
