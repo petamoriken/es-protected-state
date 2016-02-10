@@ -136,7 +136,7 @@ class Foo {
 
 class SubFoo extends Foo {
 	getBarAndIncliment() {
-		return protected.bar++;
+		return ##bar++;
 	}
 
 	protected baz() {
