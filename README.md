@@ -290,8 +290,11 @@ class Name {
 	}
 	```
 
+##Private/Protected Library by Other Thoughts
 
-##Related Proposal in ES.next
+<a href="https://github.com/gaogao-9/access-modifiers" target="_blank">access-modifiers</a> (npm module): based on Symbol, non-strict private/protected state but reflectable
+
+##Related Proposals in ES.next
 
 * <a href="https://github.com/jeffmo/es-class-fields-and-static-properties" target="_blank">Class Property Declarations</a> (Stage 1)
 * <a href="https://github.com/wycats/javascript-private-state" target="_blank">Private State for objects</a>, <a href="https://github.com/zenparsing/es-private-fields" target="_blank">Private Fields</a> (Stage 0)
